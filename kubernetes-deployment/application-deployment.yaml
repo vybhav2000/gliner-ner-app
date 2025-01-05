@@ -15,12 +15,12 @@ spec:
     spec:
       containers:
         - name: gliner-ner-app
-          image: vybhavnca/gliner-ner-app:latest
+          image: vybhavnca/gliner-ner-fastapi:latest
           env:
             - name: POSTGRES_USERNAME
-              value: "vybhav"
+              value: "vybhavnca"
             - name: POSTGRES_PASSWORD
-              value: "sivam123"
+              value: "test123"
             - name: POSTGRES_DBNAME
               value: "glinerdb"
             - name: POSTGRES_HOST
@@ -29,14 +29,10 @@ spec:
               value: "5432"
             - name: MODEL_NAME
               value: "urchade/gliner_medium-v2.1"
-            - name: BACKEND_HOST
-              value: "localhost"
-            - name: BACKEND_PORT
-              value: "8000"
             - name: NVIDIA_VISIBLE_DEVICES
               value: "all"
           ports:
-            - containerPort: 8000  # FastAPI port
+            - containerPort: 8000
 ---
 # Deployment for Streamlit app
 apiVersion: apps/v1
@@ -55,11 +51,11 @@ spec:
     spec:
       containers:
         - name: streamlit-app
-          image: your-streamlit-image:latest
+          image: vybhavnca/gliner-ner-streamlit:latest
           env:
-            - name: STREAMLIT_BACKEND_HOST
+            - name: BACKEND_HOST
               value: "gliner-ner-service"
-            - name: STREAMLIT_BACKEND_PORT
+            - name: BACKEND_PORT
               value: "8000"
           ports:
             - containerPort: 8501
@@ -74,9 +70,9 @@ spec:
     app: gliner-ner-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8000  # Expose FastAPI app on port 80 (or any desired port)
-  type: LoadBalancer
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
 ---
 # Service for Streamlit app
 apiVersion: v1
@@ -88,6 +84,7 @@ spec:
     app: streamlit-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8501  # Expose Streamlit app on port 80 (or any desired port)
-  type: LoadBalancer
+      port: 8501
+      targetPort: 8501
+      nodePort: 31000
+  type: NodePort

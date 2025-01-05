@@ -17,9 +17,9 @@ spec:
           image: postgres:latest
           env:
             - name: POSTGRES_USER
-              value: "vybhav"
+              value: "vybhavnca"
             - name: POSTGRES_PASSWORD
-              value: "sivam123"
+              value: "test123"
             - name: POSTGRES_DB
               value: "glinerdb"
           ports:
